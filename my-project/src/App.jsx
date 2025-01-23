@@ -12,12 +12,14 @@ import Resources from "./components/Resources";
 import TranslateForm from "./components/TranslateForm";
 import ChatBot from "./components/ChatBot";
 import TranscriptionAudio from "./components/TranscriptionAudio";
+import TextToSpeech from "./components/TextToSpeech";
+
 const App = () => {
   return (
     <main>
      <Router>  {/* Wrap your app in Router */}
       <Navbar />  {/* Navbar appears on all pages */}
-      
+    
       <Routes>
         {/* Define routes for different pages */}
         <Route path="/" element={<HomePage />} />  {/* Home page route */}
@@ -31,6 +33,7 @@ const App = () => {
         <Route path="/translate" element={<TranslateForm/>}/>
         <Route path="/chatbot" element={<ChatBot/>}/>
         <Route path="/transcripton-audio" element={<TranscriptionAudio/>}/>
+        <Route path="/text-to-speech" element={<TextToSpeech/>}/>
       </Routes>
       
       <Footer />  {/* Footer appears on all pages */}

@@ -63,9 +63,9 @@ const Navbar = () => {
       <li><details>
           <summary className="text-2xl">More</summary>
           <ul className="p-2">
-            <li><Link to="/translate" className="text-2xl">Translation</Link></li>
+            <li><Link to="translate/" className="text-2xl">Translation</Link></li>
             <li><Link to="/transcripton-audio" className="text-2xl">Transcription</Link></li>
-            <li><a className="text-2xl">Text-Audio</a></li>
+            <li><Link to="text-to-speech/" className="text-2xl">Text-Audio</Link></li>
             <li><Link to="/chatbot" className="text-2xl">Robot Friend</Link></li>
             <li><a className="text-2xl">Summarization</a></li>
           </ul>

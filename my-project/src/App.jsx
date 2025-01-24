@@ -13,6 +13,8 @@ import TranslateForm from "./components/TranslateForm";
 import ChatBot from "./components/ChatBot";
 import TranscriptionAudio from "./components/TranscriptionAudio";
 import TextToSpeech from "./components/TextToSpeech";
+import FlashCard from "./components/FlashCard";
+import Logout from "./components/Logout";
 
 const App = () => {
   return (
@@ -34,6 +36,8 @@ const App = () => {
         <Route path="/chatbot" element={<ChatBot/>}/>
         <Route path="/transcripton-audio" element={<TranscriptionAudio/>}/>
         <Route path="/text-to-speech" element={<TextToSpeech/>}/>
+        <Route path="/flashcard" element={<FlashCard/>}/>
+        <Route path="/logout" element={<Logout/>}/>
       </Routes>
       
       <Footer />  {/* Footer appears on all pages */}

@@ -22,7 +22,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='flashcard',
             name='user',
-            field=models.ForeignKey(default=django.utils.timezone.now, on_delete=django.db.models.deletion.CASCADE, to='auth.user'),
-            preserve_default=False,
+            field=models.ForeignKey( on_delete=django.db.models.deletion.CASCADE, to='auth.user'),
         ),
     ]

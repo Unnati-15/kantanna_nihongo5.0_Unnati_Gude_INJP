@@ -16,16 +16,25 @@ Including another URLconf
 
 # backend/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from backend import views
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from flashcard.views import FlashCardList, FlashCardDetail
+# router = DefaultRouter()
+# router.register(r'flashcard', FlashCardViewSet, basename='flashcard')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('translate/',views.translate_text),
     path('register/',views.register_user),
     path('login/',views.login_view),
-     path('transcribe/',views.transcribe_audio),
-    path('text-to-speech/', views.textspeech),
+    path('transcribe/',views.transcribe_audio),
+    path('flashcard/', FlashCardList.as_view(), name='flashcard-list'),  # GET and POST
+    path('flashcard/<int:pk>/', FlashCardDetail.as_view(), name='flashcard-detail'),  # GET, PUT, DELETE
+    path('logout/',views.logout_view),
+    path('/check_user',views.check_user),
+    # path('', include(router.urls)),
+    #path('text-to-speech/', views.textspeech),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

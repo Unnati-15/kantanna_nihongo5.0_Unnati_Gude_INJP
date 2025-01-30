@@ -1,6 +1,6 @@
 import Footer from "./components/Footer"
 import Navbar from "./components/Navbar"
-import HomePage from "./components/HomePage"
+// import HomePage from "./components/HomePage"
 import { BrowserRouter as Router,Routes,Route } from 'react-router-dom';
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
@@ -15,16 +15,25 @@ import TranscriptionAudio from "./components/TranscriptionAudio";
 import TextToSpeech from "./components/TextToSpeech";
 import FlashCard from "./components/FlashCard";
 import Logout from "./components/Logout";
-
+import MainPage from "./components/MainPage";
+import MainNavbar from "./components/MainNavbar";
+import Contact from "./components/contact";
+import About from "./components/About";
+import FileUpload from './components/FileUpload';
 const App = () => {
   return (
     <main>
      <Router>  {/* Wrap your app in Router */}
-      <Navbar />  {/* Navbar appears on all pages */}
+
+      <MainNavbar/>
+      {/* <Navbar />  Navbar appears on all pages */}
     
       <Routes>
         {/* Define routes for different pages */}
-        <Route path="/" element={<HomePage />} />  {/* Home page route */}
+        <Route path="/translate-pdf" element={<FileUpload />}/>
+        <Route path="/contact" element={<Contact />}/>
+        <Route path="/about" element={<About />}/>
+        <Route path="/" element={<MainPage />} />  {/* Home page route */}
         <Route path="/register" element={<RegisterForm />} />  
         <Route path="/login" element={<LoginForm />} /> 
         <Route path="/phrases" element={<Phrases />} /> 
@@ -37,7 +46,7 @@ const App = () => {
         <Route path="/transcripton-audio" element={<TranscriptionAudio/>}/>
         <Route path="/text-to-speech" element={<TextToSpeech/>}/>
         <Route path="/flashcard" element={<FlashCard/>}/>
-        <Route path="/logout" element={<Logout/>}/>
+        <Route path="/logout/" element={<Logout/>}/>
       </Routes>
       
       <Footer />  {/* Footer appears on all pages */}

@@ -2,34 +2,24 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {Link} from "react-router-dom";
-import { useEffect } from "react";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
-  const handleLogout = () => {
-    axios.post('http://127.0.0.1:8000/logout/')
-      .then(() => {
-        setUser(null);  // Set user to null after logout
-        navigate('/login');  // Redirect to login page
-      })
-      .catch((error) => {
-        console.error("Error logging out:", error);
-      });
-  };
-
-  useEffect(() => {
-    axios.get('http://127.0.0.1:8000/check_user')
-        .then(response => {
-            console.log("User data:", response.data.user); // Log the response to check
-            setUser(response.data.user); // Store user info if authenticated
-        })
-        .catch(() => {
-            console.log("User is not authenticated"); // Log if there's an error
-            setUser(null); // Reset if not authenticated
-        });
-}, []);
+  
+//   useEffect(() => {
+//     axios.get('http://127.0.0.1:8000/check_user')
+//         .then(response => {
+//             console.log("User data:", response.data.user); // Log the response to check
+//             setUser(response.data.user); // Store user info if authenticated
+//         })
+//         .catch(() => {
+//             console.log("User is not authenticated"); // Log if there's an error
+//             setUser(null); // Reset if not authenticated
+//         });
+// }, []);
 
   const handleNavigation = () => navigate('/register');
   const handleNavigationL = () => navigate('/login');
@@ -99,8 +89,8 @@ const Navbar = () => {
               <div>
                 Welcome, {user.username}
               </div>
-              <button className="btn btn-outline btn-primary text-2xl" onClick={handleLogout}>
-                Logout
+              <button className="btn btn-outline btn-primary text-2xl">
+              <Link to="logout/" className="text-2xl">Logout</Link>
               </button>
             </>
           ) : (

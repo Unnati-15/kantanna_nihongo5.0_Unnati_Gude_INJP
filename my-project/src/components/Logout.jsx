@@ -1,20 +1,30 @@
-import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
-const Logout = () => {
-  const navigate = useNavigate();
-  const [message, setMessage] = useState('');
-
-  const handleLogout = () => {
-    axios.post('http://127.0.0.1:8000/logout')
-      .then((response) => {
-        setMessage(response.data.message);
-        navigate('/login'); // Redirect to login page after logging out
-      })
-      .catch((error) => {
-        console.error(error,message);
+const Logout = ({ setIsAuthenticated }) => {
+  // Fetch the CSRF token from the meta tag or cookies if it's required
+  const getCsrfToken = () => {
+    const csrfToken = document.querySelector('[name=csrf-token]')?.content;
+    return csrfToken;
+  };
+  
+  const handleLogout = async () => {
+    const csrfToken = getCsrfToken();
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/logout/', {}, {
+        withCredentials: true,
+        headers: {
+          'X-CSRFToken': csrfToken  // Include CSRF token in the request
+        }
       });
+  
+      if (response.status === 200) {
+        setIsAuthenticated(false);
+        alert('Successfully logged out');
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+      alert('Logout failed');
+    }
   };
 
   return (

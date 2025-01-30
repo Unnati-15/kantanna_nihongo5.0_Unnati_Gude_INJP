@@ -21,20 +21,25 @@ from backend import views
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from flashcard.views import FlashCardList, FlashCardDetail
+# from flashcard.views import FlashCardList, FlashCardDetail
+from .views import logout_view
+from users.views import LoginView,RegisterView
 # router = DefaultRouter()
 # router.register(r'flashcard', FlashCardViewSet, basename='flashcard')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('translate/',views.translate_text),
+    path('translate/',views.translate),
     path('register/',views.register_user),
     path('login/',views.login_view),
     path('transcribe/',views.transcribe_audio),
-    path('flashcard/', FlashCardList.as_view(), name='flashcard-list'),  # GET and POST
-    path('flashcard/<int:pk>/', FlashCardDetail.as_view(), name='flashcard-detail'),  # GET, PUT, DELETE
-    path('logout/',views.logout_view),
-    path('/check_user',views.check_user),
+    # path('flashcard/', FlashCardList.as_view(), name='flashcard-list'),  # GET and POST
+    # path('flashcard/<int:pk>/', FlashCardDetail.as_view(), name='flashcard-detail'),  # GET, PUT, DELETE
+    path('logout/',logout_view),
+    path('registerusers/',RegisterView),
+    path('loginusers/',LoginView),
+     path('translate-pdf/', views.translate_pdf),
+     path('generate_audio/', views.generate_audio),
     # path('', include(router.urls)),
     #path('text-to-speech/', views.textspeech),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

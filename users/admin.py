@@ -1,6 +1,5 @@
-
-
 from django.contrib import admin
-from django.contrib.auth.models import Group
+from .models import User
 
-admin.site.register(Group)
+# Registering the User model (if you are using the default User admin interface)
+admin.site.register(User)

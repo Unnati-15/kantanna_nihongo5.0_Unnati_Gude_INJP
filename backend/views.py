@@ -193,38 +193,39 @@ def generate_pdf_from_text(translated_text):
     return buffer
 
 # Initialize TTS model
-tts = TTS(model_name="tts_models/japanese/tacotron2-DDC", gpu=False)
+# tts = TTS(model_name="tts_models/japanese/tacotron2-DDC", gpu=False)
 
+import os
 
 @csrf_exempt
 def generate_audio(request):
-    # if request.method == 'POST':
-    #     text = request.POST.get('text', '')
-
-    #     if not text:
-    #         return JsonResponse({"error": "Text not provided"}, status=400)
-
-    #     try:
-    #         # Generate speech from text and save to a temporary file
-    #         with NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
-    #             tts.tts_to_file(text, tmp_file.name)
-    #             tmp_file.close()
-    #             # Send the audio file as a response
-    #             return FileResponse(open(tmp_file.name, 'rb'), content_type='audio/wav', as_attachment=True, filename="output_audio.wav")
-
-    #     except Exception as e:
-    #         return JsonResponse({"error": str(e)}, status=500)
-
-    # return JsonResponse({"error": "Invalid method. Use POST."}, status=405)
     if request.method == 'POST':
-        formts = request.FILES['myfile'].read().decode('utf-8')
-        text = formts
-        print(text)
-        engine = pyttsx3.init()
-        jp_voiceid = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_JA-JP_HARUKA_11.0"
-        engine.setProperty('voice', jp_voiceid)
-        engine.say(text)
-        engine.save_to_file(text, 'speech.mp3')
-        engine.runAndWait()
-        return JsonResponse({'message': 'Audio file is ready!'})
+        try:
+            # Retrieve the Japanese text input
+            text = request.POST.get('text', '').strip()
+            
+            if not text:
+                return JsonResponse({'error': 'No text provided'}, status=400)
+            
+            # Initialize the pyttsx3 engine
+            engine = pyttsx3.init()
+            
+            # Set Japanese voice (assuming you have it installed in your system)
+            jp_voiceid = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices\\Tokens\\TTS_MS_JA-JP_HARUKA_11.0"
+            engine.setProperty('voice', jp_voiceid)
+            
+            # Set output file path
+            output_file_path = os.path.join('media', 'speech.mp3')
+            
+            # Generate the speech and save to file
+            engine.save_to_file(text, output_file_path)
+            engine.runAndWait()
+
+            # Return the URL of the generated audio file
+            audio_url = f'http://127.0.0.1:8000/media/speech.mp3'
+            return JsonResponse({'message': 'Audio file is ready!', 'audio_file': audio_url})
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
     return JsonResponse({'error': 'Invalid request'}, status=400)

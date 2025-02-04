@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 # from flashcard.views import FlashCardList, FlashCardDetail
 from .views import logout_view
-from users.views import UserRegistrationView, UserLoginView, UserLogoutView
+from users.views import UserRegistrationView, UserLogoutView,UserLoginView
 from learner.views import LearnerRegistrationView
 # router = DefaultRouter()
 # router.register(r'flashcard', FlashCardViewSet, basename='flashcard')
@@ -49,5 +49,5 @@ urlpatterns = [
     path('api/auth/register/', UserRegistrationView.as_view(), name='user-registration'),
     path('api/auth/login/', UserLoginView.as_view(), name='user-login'),
     path('api/auth/logout/', UserLogoutView.as_view(), name='user-logout'),
-    path('api/auth/register/student/', LearnerRegistrationView.as_view(), name='student-registration'),
+    path('api/auth/register/learner/', LearnerRegistrationView.as_view(), name='learner-registration'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

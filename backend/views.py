@@ -35,6 +35,7 @@ def register_user(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 import json
+
 @api_view(['POST'])
 def translate(request):
     if request.method == "POST":

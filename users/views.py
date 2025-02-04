@@ -51,14 +51,10 @@ from django.contrib.auth import authenticate, login
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from learner.serializers import LearnerSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authtoken.models import Token
 
 class UserRegistrationView(APIView):
     def post(self, request):
@@ -69,23 +65,60 @@ class UserRegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate, login
+from learner.models import Learner
+from learner.serializers import LearnerSerializer
 
-class UserLoginView(ObtainAuthToken):
-    def post(self, request):
+class UserLoginView(APIView):
+    def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
-
+        
+        # Authenticate the user
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
+            # User authenticated, log them in
             login(request, user)
+            
+            # Generate or get an existing token
             token, created = Token.objects.get_or_create(user=user)
             if created:
-                token.delete()  # Delete the token if it was already created
+                token.delete()  # If token was created but already exists, delete and create a new one
                 token = Token.objects.create(user=user)
-            return Response({'token': token.key, 'username': user.username, 'role': user.role})
-        else:
-            return Response({'message': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+
+            # Prepare the response data
+            response_data = {
+                'token': token.key,
+                'username': user.username,
+                'role': user.role,  # Assuming you have a 'role' field in the User model
+            }
+
+            # Check if the user is a learner and add learner data to the response
+            if user.role == 'learner':
+                # Make sure the user has a related Learner instance
+                try:
+                    learner = user.learner_account  # Assuming related name is 'learner_account'
+                    learner_serializer = LearnerSerializer(learner)
+                    response_data['skill_level'] = learner_serializer.data.get('skill_level', 'unknown')
+                    response_data['data'] = learner_serializer.data  # Add additional learner data
+                except Learner.DoesNotExist:
+                    response_data['skill_level'] = 'unknown'
+                    response_data['data'] = {}
+
+            return Response(response_data)
         
+        else:
+            return Response({'message': 'Invalid username or password'}, status=401)
+
+
+
+
+
+
 class UserLogoutView(APIView):
     permission_classes = [IsAuthenticated]
 

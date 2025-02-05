@@ -32,6 +32,7 @@ const App = () => {
 
 // MainApp: The part of the app where routing happens
 
+// eslint-disable-next-line react/prop-types
 const MainApp = ({ token, skillLevel, setToken }) => {
   const location = useLocation(); // This will now work because it's inside Router
   const showMainNavbar = !['/beginner-pages', '/advanced-pages','/phrases'].includes(location.pathname);

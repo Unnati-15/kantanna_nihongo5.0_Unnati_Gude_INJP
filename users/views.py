@@ -72,6 +72,36 @@ from django.contrib.auth import authenticate, login
 from learner.models import Learner
 from learner.serializers import LearnerSerializer
 
+# class UserLoginView(APIView):
+#     def post(self, request, *args, **kwargs):
+#         username = request.data.get('username')
+#         password = request.data.get('password')
+        
+#         # Authenticate the user
+#         user = authenticate(request, username=username, password=password)
+
+#         if user is not None:
+#             # User authenticated, log them in
+#             login(request, user)
+            
+#             # Generate or get an existing token
+#             token, created = Token.objects.get_or_create(user=user)
+#             if created:
+#                 token.delete()  # If token was created but already exists, delete and create a new one
+#                 token = Token.objects.create(user=user)
+
+#             # Prepare the response data
+#             response_data = {
+#                 'token': token.key,
+#                 'username': user.username,
+#                 'role': user.role,  # Assuming you have a 'role' field in the User model
+#             }
+
+#             # Check if the user is a learner and add learner data to the response
+#           
+        
+#         else:
+#             return Response({'message': 'Invalid username or password'}, status=401)
 class UserLoginView(APIView):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
@@ -103,7 +133,7 @@ class UserLoginView(APIView):
                 try:
                     learner = user.learner_account  # Assuming related name is 'learner_account'
                     learner_serializer = LearnerSerializer(learner)
-                    response_data['skill_level'] = learner_serializer.data.get('skill_level', 'unknown')
+                    response_data['skill_level'] = learner_serializer.data.get('skill_level','unknown')
                     response_data['data'] = learner_serializer.data  # Add additional learner data
                 except Learner.DoesNotExist:
                     response_data['skill_level'] = 'unknown'
@@ -113,22 +143,53 @@ class UserLoginView(APIView):
         
         else:
             return Response({'message': 'Invalid username or password'}, status=401)
+        
 
+# class UserLogoutView(APIView):
+#     permission_classes = [IsAuthenticated]
 
+#     def post(self, request, *args, **kwargs):
+#         try:
+#             # Get the user's token
+#             token = Token.objects.get(user=request.user)
+#             token.delete()  # Delete the token
+#             return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
+#         except Token.DoesNotExist:
+#             return Response({"message": "No token found"}, status=status.HTTP_400_BAD_REQUEST)
+# class UserLogoutView(APIView):
+#     permission_classes = [IsAuthenticated]
 
+#     def post(self, request):
+#         print(f"Request Headers: {request.headers}")  # Log the headers to check if Authorization is sent
 
+#         # Ensure we are receiving the correct token
+#         token_key = request.auth.key if request.auth else None
+        
+#         if not token_key:
+#             return Response({'detail': 'Authentication credentials were not provided.'}, status=401)
 
-
+#         try:
+#             token = Token.objects.get(key=token_key)
+#             token.delete()
+#             return Response({'detail': 'Successfully logged out.'})
+#         except Token.DoesNotExist:
+#             return Response({'detail': 'Invalid token.'}, status=401)
 class UserLogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # The request.auth will hold the Token object if the request is authenticated
-        token = request.auth  # This will get the token associated with the user
+        # Print the Authorization header to debug
+        print(f"Authorization Header: {request.headers.get('Authorization')}")
 
-        if token:
-            # Delete the token to log the user out
+        # Ensure we are receiving the correct token
+        token_key = request.auth.key if request.auth else None
+        
+        if not token_key:
+            return Response({'detail': 'Authentication credentials were not provided.'}, status=401)
+
+        try:
+            token = Token.objects.get(key=token_key)
             token.delete()
             return Response({'detail': 'Successfully logged out.'})
-        else:
-            return Response({'detail': 'No token provided or token is invalid.'}, status=400)
+        except Token.DoesNotExist:
+            return Response({'detail': 'Invalid token.'}, status=401)

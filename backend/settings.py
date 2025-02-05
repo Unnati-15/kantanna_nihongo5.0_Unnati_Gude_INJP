@@ -65,10 +65,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',    
 ]
-CSRF_COOKIE_NAME = "csrftoken"
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',  
 ]
+CORS_ORIGIN_ALLOW_ALL = True  
 
 CORS_ALLOW_METHODS = [
     'GET',
@@ -90,7 +91,7 @@ CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False  
 CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 ROOT_URLCONF = 'backend.urls'
-CORS_ORIGIN_ALLOW_ALL = True  
+
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SAMESITE = 'Strict' 
 SESSION_COOKIE_NAME = 'sessionid'
@@ -152,6 +153,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # }
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
 }

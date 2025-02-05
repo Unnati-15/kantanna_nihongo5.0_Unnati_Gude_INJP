@@ -1,5 +1,5 @@
 import 'react';
-
+import { Link } from 'react-router-dom';
 const MainPage = () => {
   return (
     <div className="flex justify-center gap-4 p-4">
@@ -15,7 +15,7 @@ const MainPage = () => {
           <h2 className="card-title">LEARNER</h2>
           <p>Interested in learning Japanese?<br />Start your learning journey now!</p>
           <div className="card-actions">
-            <button className="text-xl text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button>
+          <Link to='/login'> <button className="text-xl text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button></Link> 
           </div>
         </div>
       </div>

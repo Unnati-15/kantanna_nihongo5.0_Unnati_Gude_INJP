@@ -1,58 +1,72 @@
-import Footer from "./components/Footer"
-import Navbar from "./components/Navbar"
-// import HomePage from "./components/HomePage"
-import { BrowserRouter as Router,Routes,Route } from 'react-router-dom';
-import RegisterForm from "./components/RegisterForm";
-import LoginForm from "./components/LoginForm";
-import Phrases from "./components/Phrases";
-import HiraganaLearning from "./components/HiraganaLearning";
-import KatakanaLearning from "./components/KatakanaLearning";
-import KanjiLearning from "./components/KanjiLearning";
-import Resources from "./components/Resources";
-import TranslateForm from "./components/TranslateForm";
-import ChatBot from "./components/ChatBot";
-import TranscriptionAudio from "./components/TranscriptionAudio";
-import TextToSpeech from "./components/TextToSpeech";
-import FlashCard from "./components/FlashCard";
-import Logout from "./components/Logout";
+import Footer from "./components/Footer";
+import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import MainPage from "./components/MainPage";
 import MainNavbar from "./components/MainNavbar";
-import Contact from "./components/contact";
-import About from "./components/About";
-import FileUpload from './components/FileUpload';
+import LearnerRegistration from "./components/LearnerRegistration";
+import UserLogin from "./components/UserLogin";
+import UserLogout from "./components/UserLogout";
+import BeginnerPages from "./components/BeginnerPages";
+import AdvancedPages from "./components/AdvancedPages";
+import Phrases from "./components/Phrases";
 const App = () => {
+  const [token, setToken] = useState('');
+  const [skillLevel, setSkillLevel] = useState('');
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    const storedSkillLevel = localStorage.getItem('skill_level');
+
+    if (storedToken && storedSkillLevel) {
+      setToken(storedToken);
+      setSkillLevel(storedSkillLevel);
+    }
+  }, []);
+
   return (
-    <main>
-     <Router>  {/* Wrap your app in Router */}
-
-      <MainNavbar/>
-      {/* <Navbar />  Navbar appears on all pages */}
-    
-      <Routes>
-        {/* Define routes for different pages */}
-        <Route path="/translate-pdf" element={<FileUpload />}/>
-        <Route path="/contact" element={<Contact />}/>
-        <Route path="/about" element={<About />}/>
-        <Route path="/" element={<MainPage />} />  {/* Home page route */}
-        <Route path="/register" element={<RegisterForm />} />  
-        <Route path="/login" element={<LoginForm />} /> 
-        <Route path="/phrases" element={<Phrases />} /> 
-        <Route path="/hiragana" element={<HiraganaLearning/>}/>
-        <Route path="/katakana" element={<KatakanaLearning/>}/>
-        <Route path="/kanji" element={<KanjiLearning/>}/>
-        <Route path="/resources" element={<Resources/>}/>
-        <Route path="/translate" element={<TranslateForm/>}/>
-        <Route path="/chatbot" element={<ChatBot/>}/>
-        <Route path="/transcripton-audio" element={<TranscriptionAudio/>}/>
-        <Route path="/text-to-speech" element={<TextToSpeech/>}/>
-        <Route path="/flashcard" element={<FlashCard/>}/>
-        <Route path="/logout/" element={<Logout/>}/>
-      </Routes>
-      
-      <Footer />  {/* Footer appears on all pages */}
+    <Router>
+      <MainApp token={token} skillLevel={skillLevel} setToken={setToken} />
     </Router>
-    </main>
-  )
-}
+  );
+};
 
-export default App
+// MainApp: The part of the app where routing happens
+
+const MainApp = ({ token, skillLevel, setToken }) => {
+  const location = useLocation(); // This will now work because it's inside Router
+  const showMainNavbar = !['/beginner-pages', '/advanced-pages','/phrases'].includes(location.pathname);
+
+  return (
+    <>
+      {showMainNavbar && <MainNavbar />}
+      <Routes>
+        <Route path="/login" element={<UserLogin setToken={setToken} />} />
+        <Route path="/register" element={<LearnerRegistration />} />
+        <Route path="/logout" element={<UserLogout setToken={setToken}  />} />
+        
+        {/* Protecting the /beginner-pages route */}
+        <Route
+          path="/beginner-pages"
+          element={token ? (skillLevel === 'beginner' ? <BeginnerPages /> : <MainPage />) : <Navigate to="/login" />}
+        />
+
+        {/* Protecting the /advanced-pages route */}
+        <Route
+          path="/advanced-pages"
+          element={token ? (skillLevel === 'advanced' ? <AdvancedPages /> : <MainPage />) : <Navigate to="/login" />}
+        />
+        
+        {/* Protecting the /phrases route */}
+        <Route
+          path="/phrases"
+          element={token ? (skillLevel === 'beginner' ? <Phrases/> : <BeginnerPages />) : <Navigate to="/login" />}
+        />
+
+        <Route path="/" element={<MainPage />} />
+      </Routes>
+      <Footer />
+    </>
+  );
+};
+
+export default App;

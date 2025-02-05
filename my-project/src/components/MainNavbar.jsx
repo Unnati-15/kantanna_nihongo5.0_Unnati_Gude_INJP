@@ -14,9 +14,7 @@ const MainNavbar = () => {
           <Link to="/translate">  <button className="btn btn-ghost text-2xl hover:bg-white hover:text-yellow-500 transition-all mr-4">
             Translation
           </button></Link>  
-       {/* <Link to="/transcripton-audio"> <button className="btn btn-ghost text-2xl hover:bg-white hover:text-yellow-500 transition-all">
-            Transcription
-          </button></Link>   */}
+     
         </div>
       </div>
     </div>
